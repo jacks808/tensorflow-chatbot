@@ -6,7 +6,7 @@ A tensorflow chatbot use seq2seq model.
 - [x] inference some sentence
 - [x] export `tensorflow serving` model
 - [x] command line support
-- [ ] support read train data from file
+- [x] support read train data from file (finish at 2018-04-03)
 - [ ] support chinese word split using `jieba`
 - [ ] support summary for tensorboard 
 - [ ] translate chinese comment to english
@@ -16,11 +16,19 @@ A tensorflow chatbot use seq2seq model.
 
 
 # Usage:
+## Define data
+Here we use a txt file to save train data. The data file contains a `question` and `answer` pre line.
+Where line format is: `[question] | [answer]` e.g. `你好 | Hello`
+
+The train data save at: `data/train.txt`. or set start argument: `--train_data_path='your_path_of_train_data'` to point out your data location.
+
+
+## Run 
 Train: `python main.py --mode=train`
 
 Inference: `python main.py --mode=inference`
 
-Export: `python main.py --mode=inference`
+Export serving model: `python main.py --mode=inference`
 
 ## Params:
 

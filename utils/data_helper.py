@@ -1,62 +1,8 @@
+import codecs
 import re
 from collections import Counter
 
-
-# from utils import hparam
-
-# input_batches = [
-#     ['Hi What is your name?', 'Nice to meet you!'],
-#     ['Which programming language do you use?', 'See you later.'],
-#     ['Where do you live?', 'What is your major?'],
-#     ['What do you want to drink?', 'What is your favorite beer?']]
-#
-# target_batches = [
-#     ['Hi this is Jaemin.', 'Nice to meet you too!'],
-#     ['I like Python.', 'Bye Bye.'],
-#     ['I live in Seoul, South Korea.', 'I study industrial engineering.'],
-#     ['Beer please!', 'Leffe brown!']]
-
-
-def def_input_batches():
-    input_batches = [
-        ['你 叫 什么?', '很高兴 认识 你!'],
-        ['你 多大 了?', '再见.'],
-        ['你 住在 哪?', '你是 做什么 的?'],
-        ['你会 什么?', '最 擅长 什么?'],
-        ['在吗?', '你 喜欢 我 吗?'],
-        ['吃了吗?'],
-        ['你好'],
-        ['你是 谁?'],
-    ]
-    return input_batches
-
-
-def def_target_batches():
-    target_batches = [
-        ['我是 小黄鸡', '我也 很高兴 认识 你!'],
-        ['年龄 是个 秘密!', 'Bye Bye.'],
-        ['我 住在 中国 的 硅谷, 西二旗!', '我 负责 陪你 聊天'],
-        ['琴棋书画 样样精通!', '被 调教!'],
-        ['我在 我在', '就 那样 吧'],
-        ['没吃, 你要 请 我去 WJ 咖啡 吗?'],
-        ['恩 就 那样 吧'],
-        ['小黄鸡'],
-    ]
-    return target_batches
-
-
-# all_input_sentences = []
-# for input_batch in input_batches:
-#     all_input_sentences.extend(input_batch)
-
-# all_target_sentences = []
-# for target_batch in target_batches:
-#     all_target_sentences.extend(target_batch)
-#
-# pprint("输入字典:\n")
-# pprint(all_input_sentences)
-# pprint("输出字典:\n")
-# pprint(all_target_sentences)
+import numpy as np
 
 
 def tokenizer(sentence):
@@ -133,33 +79,57 @@ def init_data(hparams):
     """
     init data
     :param hparams:
-    :return:
+    :return: a data info dict, contains: enc_vocab, dec_vocab, enc_reverse_vocab, dec_reverse_vocab, input_batches, target_batches
     """
-    # encoder数据
-    input_batches = def_input_batches()
-    all_input_sentences = []
-    for input_batch in input_batches:
-        all_input_sentences.extend(input_batch)
+    all_input_sentences, all_target_sentences = read_data_from_file(hparams)
+
+    # encoder data
     enc_vocab, enc_reverse_vocab, enc_vocab_size = build_vocab(hparams, all_input_sentences)
 
-    # decoder数据
-    target_batches = def_target_batches()
-    all_target_sentences = []
-    for target_batch in target_batches:
-        all_target_sentences.extend(target_batch)
+    # decoder data
     dec_vocab, dec_reverse_vocab, dec_vocab_size = build_vocab(hparams, all_target_sentences,
-                                                                           is_target=True)
+                                                               is_target=True)
 
     # update hparam
     hparams.enc_vocab_size = enc_vocab_size
     hparams.dec_vocab_size = dec_vocab_size
+
+    # padding batch data
+    batch_pad_size = len(all_input_sentences) % hparams.batch_size
+    if batch_pad_size > 0:
+        all_input_sentences.extend(all_input_sentences[:hparams.batch_size - batch_pad_size])
+        all_target_sentences.extend(all_target_sentences[:hparams.batch_size - batch_pad_size])
+
     data_info = {
         'enc_vocab': enc_vocab,
         'dec_vocab': dec_vocab,
         'enc_reverse_vocab': enc_reverse_vocab,
         'dec_reverse_vocab': dec_reverse_vocab,
-        'input_batches': input_batches,
-        'target_batches': target_batches,
-
+        'input_batches': np.reshape(all_input_sentences, [-1, hparams.batch_size]),
+        'target_batches': np.reshape(all_target_sentences, [-1, hparams.batch_size]),
     }
     return data_info
+
+
+def read_data_from_file(hparams):
+    """
+    read data from file
+    :param hparams: use hparams.train_data_path
+    :return:
+    """
+    encoder_data = []
+    decoder_data = []
+
+    with codecs.open(hparams.train_data_path) as file:
+        for line in file.readlines():
+            try:
+                question, answer = line.strip().split('|')
+                question = question.strip()
+                answer = answer.strip()
+            except ValueError:
+                raise Exception("read_data_from_file error while handle line : ", line,
+                                "please fix your data and try again")
+            encoder_data.append(question)
+            decoder_data.append(answer)
+
+    return encoder_data, decoder_data

@@ -16,11 +16,11 @@ flags.DEFINE_string(name="SYMBOLS_PAD", default="<pad>", help="补全字符")
 # 编码字符长度
 flags.DEFINE_integer(name="enc_sentence_length", default=10, help="enc_sentence_length")
 flags.DEFINE_integer(name="dec_sentence_length", default=10, help="dec_sentence_length")
-flags.DEFINE_integer(name="batch_size", default=4, help="batch_size")
+flags.DEFINE_integer(name="batch_size", default=6, help="batch_size")
 
 # hparams of graph
 flags.DEFINE_integer(name="n_epoch", default=5000, help="n_epoch")
-flags.DEFINE_integer(name="hidden_size", default=30, help="hidden_size")
+flags.DEFINE_integer(name="hidden_size", default=50, help="hidden_size")
 
 flags.DEFINE_integer(name="enc_emb_size", default=30, help="enc_emb_size")
 flags.DEFINE_integer(name="dec_emb_size", default=30, help="dec_emb_size")
@@ -33,6 +33,7 @@ flags.DEFINE_string(name='model_save_name', default='model.ckpt', help='model_sa
 flags.DEFINE_string(name='mode', default='train', help='mode of this program(train, inference, export)')
 
 flags.DEFINE_string(name='export_serving_model_to', default='./serving_model/', help='export serving model to')
+flags.DEFINE_string(name='train_data_path', default=None, help='train_data_path')
 FLAGS = flags.FLAGS
 
 
@@ -61,7 +62,7 @@ def create_hparams(flags):
         mode=flags.mode,
 
         export_serving_model_to=flags.export_serving_model_to,
-
+        train_data_path=flags.train_data_path,
     )
 
 
@@ -139,7 +140,7 @@ def main(_):
     if hparams.mode == 'train':
         train.train(hparams, model, data_info)
     elif hparams.mode == 'inference':
-        inference.infer(hparams, model, data_info, '你好')
+        inference.infer(hparams, model, data_info, 'But you should know I maybe')
     elif hparams.mode == 'export':
         export_helper.export_model(hparams, model)
     else:
