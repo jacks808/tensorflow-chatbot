@@ -50,3 +50,5 @@ Export serving model: `python main.py --mode=inference`
 | model_save_name         | `model.ckpt`           | name of saved model                                       |
 | mode                    | `mode`                 | model of this program, must in (train, inference, export) |
 | export_serving_model_to | `./serving_model/`     | export serving model to                                   |
+| train_data_path         | `None`                 | train_data_path                                           |
+
