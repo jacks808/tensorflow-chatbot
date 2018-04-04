@@ -1,0 +1,166 @@
+name: tensorflow-chatbot
+channels:
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+- https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+- defaults
+dependencies:
+- ca-certificates=2017.08.26=ha1e5d58_0
+- certifi=2018.1.18=py36_0
+- libcxx=4.0.1=h579ed51_0
+- libcxxabi=4.0.1=hebd6815_0
+- libedit=3.1=hb4e282d_0
+- libffi=3.2.1=h475c297_4
+- ncurses=6.0=hd04f020_2
+- openssl=1.0.2n=hdbc3d79_0
+- pip=9.0.1=py36h1555ced_4
+- python=3.6.4=hc167b69_1
+- readline=7.0=hc1231fa_4
+- setuptools=38.4.0=py36_0
+- sqlite=3.22.0=h3efe00b_0
+- tk=8.6.7=h35a86e2_3
+- wheel=0.30.0=py36h5eb2c71_1
+- xz=5.2.3=h0278029_2
+- zlib=1.2.11=hf3cbc9b_2
+- absl-py=0.1.10=py_0
+- appnope=0.1.0=py36_0
+- asn1crypto=0.24.0=py36_0
+- backports=1.0=py36_1
+- backports.functools_lru_cache=1.5=py36_0
+- backports.weakref=1.0rc1=py36_1
+- blas=1.1=openblas
+- bleach=1.5.0=py36_0
+- boto3=1.5.35=py_0
+- botocore=1.8.50=py_0
+- bzip2=1.0.6=1
+- cairo=1.14.6=5
+- cffi=1.11.2=py36_0
+- chardet=3.0.4=py36_0
+- click=6.7=py_1
+- cryptography=2.1.4=py36_0
+- cycler=0.10.0=py36_0
+- decorator=4.0.11=py36_0
+- django=2.0.3=py36_0
+- docutils=0.14=py36_0
+- entrypoints=0.2.3=py36_1
+- ffmpeg=3.2.4=3
+- flask=0.12.2=py36_0
+- fontconfig=2.12.1=6
+- freetype=2.7=2
+- gettext=0.19.8.1=0
+- giflib=5.1.4=0
+- glib=2.51.4=0
+- gmp=6.1.2=0
+- gnutls=3.5.17=0
+- graphite2=1.3.10=0
+- harfbuzz=1.3.4=2
+- hdf5=1.10.1=1
+- html5lib=0.9999999=py36_0
+- icu=58.2=0
+- idna=2.6=py36_1
+- imageio=2.1.2=py36_0
+- ipykernel=4.8.2=py36_0
+- ipython=6.2.1=py36_1
+- ipython_genutils=0.2.0=py36_0
+- ipywidgets=7.1.2=py36_0
+- itsdangerous=0.24=py_2
+- jasper=1.900.1=4
+- jedi=0.11.1=py36_0
+- jieba=0.39=py36_0
+- jinja2=2.10=py36_0
+- jmespath=0.9.3=py36_0
+- jpeg=9b=2
+- jsonschema=2.6.0=py36_1
+- jupyter=1.0.0=py36_0
+- jupyter_client=5.2.2=py36_0
+- jupyter_console=5.2.0=py36_0
+- jupyter_core=4.4.0=py_0
+- libiconv=1.15=0
+- libidn11=1.33=0
+- libpng=1.6.28=2
+- libsodium=1.0.15=1
+- libtiff=4.0.7=1
+- libwebp=0.5.2=7
+- libxml2=2.9.7=0
+- markdown=2.6.9=py36_0
+- markupsafe=1.0=py36_0
+- matplotlib=2.1.1=py36_0
+- mistune=0.8.3=py_0
+- moviepy=0.2.3.2=py36_0
+- nbconvert=5.3.1=py_1
+- nbformat=4.4.0=py36_0
+- nettle=3.3=0
+- notebook=5.4.0=py36_0
+- numpy=1.14.0=py36_blas_openblas_200
+- olefile=0.44=py36_0
+- openblas=0.2.20=7
+- opencv=3.3.0=py36_blas_openblas_203
+- pandas=0.22.0=py36_0
+- pandoc=2.1.2=0
+- pandocfilters=1.4.1=py36_0
+- parso=0.1.1=py_0
+- pcre=8.39=0
+- pexpect=4.4.0=py36_0
+- pickleshare=0.7.4=py36_0
+- pillow=4.3.0=py36_1
+- pixman=0.34.0=1
+- prompt_toolkit=1.0.15=py36_0
+- protobuf=3.5.1=py36_3
+- ptyprocess=0.5.2=py36_0
+- pycparser=2.18=py36_0
+- pygments=2.2.0=py36_0
+- pyopenssl=17.4.0=py36_0
+- pyparsing=2.2.0=py36_0
+- pyqt=5.6.0=py36_4
+- pysocks=1.6.8=py36_1
+- python-dateutil=2.6.1=py36_0
+- pytz=2018.3=py_0
+- pyzmq=17.0.0=py36_3
+- qt=5.6.2=h9e3eb04_4
+- qtconsole=4.3.1=py36_0
+- requests=2.18.4=py36_1
+- s3transfer=0.1.13=py36_0
+- scipy=1.0.0=py36_blas_openblas_201
+- send2trash=1.5.0=py_0
+- simplegeneric=0.8.1=py36_0
+- sip=4.18=py36_1
+- six=1.11.0=py36_1
+- smart_open=1.5.6=py36_1
+- terminado=0.8.1=py36_0
+- testpath=0.3.1=py36_0
+- tornado=4.5.3=py36_0
+- tqdm=4.11.2=py36_0
+- traitlets=4.3.2=py36_0
+- urllib3=1.22=py36_0
+- wcwidth=0.1.7=py36_0
+- webencodings=0.5=py36_0
+- werkzeug=0.14.1=py_0
+- widgetsnbextension=3.1.4=py36_0
+- x264=20131217=3
+- zeromq=4.2.3=2
+- bz2file=0.98=py36_0
+- boto=2.48.0=py36hdbc59ac_1
+- gensim=3.3.0=py36h917ab60_0
+- intel-openmp=2018.0.0=h8158457_8
+- libgfortran=3.0.1=h93005f0_2
+- libprotobuf=3.4.1=h326466f_0
+- mkl=2018.0.1=hfbd8650_4
+- pip:
+  - astor==0.6.2
+  - backports.functools-lru-cache==1.5
+  - gast==0.2.0
+  - grpcio==1.10.0
+  - ipython-genutils==0.2.0
+  - jupyter-client==5.2.2
+  - jupyter-console==5.2.0
+  - jupyter-core==4.4.0
+  - prompt-toolkit==1.0.15
+  - smart-open==1.5.6
+  - tensorboard==1.6.0
+  - tensorflow==1.6.0
+  - termcolor==1.1.0
+prefix: ~/whoyouare/miniconda3/envs/tensorflow-chatbot
+
