@@ -42,11 +42,13 @@ def sent2idx(hparams, sent, vocab, max_sentence_length=None, is_target=False):
     :param is_target:
     :return:
     """
-    if max_sentence_length is None:
-        max_sentence_length = hparams.enc_sentence_length
-
-    tokens = data_helper.tokenizer(sent)
+    tokens = data_helper.tokenizer(hparams, sent)
     current_length = len(tokens)
+
+    if current_length > max_sentence_length:
+        raise Exception("current sentence length %d greater than max_sentence_length %d, sentence: `%s`" % (
+            current_length, max_sentence_length, sent))
+
     pad_length = max_sentence_length - current_length
     if is_target:
         return [0] + [token2idx(token, vocab) for token in tokens] + [1] * pad_length
@@ -72,18 +74,39 @@ def idx2sent(hparams, indices, reverse_vocab):
     :param reverse_vocab: 反查表 see chatbot.build_vocab
     :return: 使用空格拼接的词list
     """
-    return " ".join([idx2token(idx, reverse_vocab) for idx in indices]).replace(hparams.SYMBOLS_PAD, "")
+    return "".join([idx2token(idx, reverse_vocab) for idx in indices]).replace(hparams.SYMBOLS_PAD, "").replace(
+        hparams.SYMBOLS_START, "").strip()
 
 
 def build_input(hparams, sentences, vocab):
+    """
+    build input from sentences.
+    :param hparams: hparams
+    :param sentences: sentence list
+    :param vocab: vocab
+    :return:
+    """
     result = []
     for sentence in sentences:
-        input_sentence_index, _ = sent2idx(hparams, sentence, vocab=vocab)
+        input_sentence_index, _ = sent2idx(
+            hparams=hparams,
+            sent=sentence,
+            vocab=vocab,
+            max_sentence_length=hparams.enc_sentence_length,
+            is_target=False
+        )
         result.append(input_sentence_index)
     return result
 
 
 def build_output(hparams, sentences, vocab):
+    """
+    build output from sentences.
+    :param hparams:  hparams
+    :param sentences:  sentence list
+    :param vocab:  vocab
+    :return:
+    """
     decoder_data = []
     for sentence in sentences:
         decoder_index = sent2idx(

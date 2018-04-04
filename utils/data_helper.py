@@ -1,11 +1,63 @@
 import codecs
+import logging
+import os
 import re
 from collections import Counter
 
+import jieba
 import numpy as np
 
 
-def tokenizer(sentence):
+def cut_file(hparams):
+    """
+    cut a file from sentence to words
+    :param hparams: hparams
+    :return: None
+    """
+    src_file_path = hparams.data_path
+    target_file_path = src_file_path + hparams.cut_data_postfix
+    stopwords_path = hparams.stopwords_path
+
+    # load stopwords set
+    stopword_set = set()
+    with open(stopwords_path, 'r', encoding='utf-8') as stopwords:
+        for stopword in stopwords:
+            stopword_set.add(stopword.strip('\n'))
+
+    output = open(target_file_path, 'w', encoding='utf-8')
+    with open(src_file_path, 'r', encoding='utf-8') as content:
+        for texts_num, line in enumerate(content):
+            line = line.strip('\n')
+            words = cut_sentence(hparams, line)
+            for word in words:
+                if word not in stopword_set:
+                    output.write(word.strip() + ' ')
+            output.write('\n')
+
+            if (texts_num + 1) % 1000 == 0:
+                logging.info("process %d line" % (texts_num + 1))
+
+        logging.info("Total cut %d line" % (texts_num + 1))
+    output.close()
+
+
+def cut_sentence(hparams, sentence):
+    """
+    cut word
+    :param hparams:
+    :param sentence:
+    :return:
+    """
+    jieba_dict_path = hparams.jieba_dict_path
+
+    if jieba.get_dict_file().name != hparams.jieba_dict_path:
+        jieba.set_dictionary(jieba_dict_path)
+
+    words = jieba.lcut(sentence, cut_all=False)
+    return words
+
+
+def tokenizer(hparams, sentence):
     """
     切词工具, 后续替换成jieba分词
     # Example:
@@ -13,7 +65,6 @@ def tokenizer(sentence):
     :param sentence: 输入的句子
     :return: 词list
     """
-    # print(type(sentence))
     if isinstance(sentence, bytes):
         sentence = sentence.decode("utf-8")
 
@@ -43,7 +94,7 @@ def build_vocab(hparams, sentences, is_target=False, max_vocab_size=None):
 
     # 遍历sentences, 并进行切词和统计
     for sentence in sentences:
-        tokens = tokenizer(sentence)
+        tokens = tokenizer(hparams, sentence)
         word_counter.update(tokens)
 
     # 确定词典大小
@@ -120,7 +171,12 @@ def read_data_from_file(hparams):
     encoder_data = []
     decoder_data = []
 
-    with codecs.open(hparams.train_data_path) as file:
+    # use cut file
+    data_path = hparams.data_path + hparams.cut_data_postfix
+    if not os.path.exists(data_path):
+        raise Exception("cut file not exists, please run `python main.py --mode=cut_data` ")
+
+    with codecs.open(data_path) as file:
         for line in file.readlines():
             try:
                 question, answer = line.strip().split('|')
