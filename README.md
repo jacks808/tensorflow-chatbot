@@ -1,39 +1,59 @@
 # Tensorflow Chatbot
-A tensorflow chatbot use seq2seq model. 
+A tensorflow chatbot project. use [`embedding_rnn_seq2seq`](https://www.tensorflow.org/api_docs/python/tf/contrib/legacy_seq2seq/embedding_rnn_seq2seq) as the neural network model. 
+
+![](https://ws4.sinaimg.cn/large/006tNc79ly1fq0re9uzhoj31ee0vu4dp.jpg)
 
 # Functions
-- [x] train a seq2seq model.
-- [x] inference some sentence
-- [x] export `tensorflow serving` model
-- [x] command line support
-- [x] support read train data from file (finish at 2018-04-03)
-- [ ] support chinese word split using `jieba`
-- [ ] support summary for tensorboard 
-- [ ] translate chinese comment to english
-- [ ] add Django web support
-- [ ] add http chatbot api
-- [ ] add ui for chatbot
+
+- [x] Support Not English data
+- [x] Train a seq2seq model.
+- [x] Support `Train`, `Inference`, `Export Serving Model` by different argument.
+- [x] Inference some sentence
+- [x] Auto save trained model, see param of: `model_save_path` and `model_save_name`.
+- [x] Command line support
+- [x] Support read train data from file
+- [x] Support chinese word split using `jieba`
+- [ ] Support summary for tensorboard 
+- [ ] Translate chinese comment to english
+- [ ] Add Django web support
+- [ ] Add http chatbot api
+- [ ] Add ui for chatbot
 
 
 # Usage:
+This project supoort different goal: cut a sentences file use `jieba`, train a model, inference a result or export your model for [tensorflow serving](https://www.tensorflow.org/serving/)
+
 ## Define data
+
 Here we use a txt file to save train data. The data file contains a `question` and `answer` pre line.
 Where line format is: `[question] | [answer]` e.g. `你好 | Hello`
 
 The train data save at: `data/train.txt`. or set start argument: `--train_data_path='your_path_of_train_data'` to point out your data location.
 
 
-## Run 
-Train: `python main.py --mode=train`
+## How to Use 
+### Prepare Data: 
 
-Inference: `python main.py --mode=inference`
+> `python main.py --mode=cut_data --data_path="your_data_path" --stopwords_path="stopword_path" --jieba_dict_path="dict_path"`
 
-Export serving model: `python main.py --mode=inference`
+### Train:
+
+> `python main.py --mode=train --data_path="your_data_path" --stopwords_path="stopword_path" --jieba_dict_path="dict_path"`
+
+### Inference: 
+
+> `python main.py --mode=inference --question="放个屁" --data_path="your_data_path" --stopwords_path="stopword_path" --jieba_dict_path="dict_path"`
+
+### Export serving model: 
+
+> `python main.py --mode=export --data_path="/Users/keen/workspace/seq2seq-chatbot/data/train.txt"`
 
 ## Params:
 
+Parameters of this program is shown below:
+
 | Param                   | default value          | Help                                                      |
-| ----------------------- | ---------------------- | --------------------------------------------------------- |
+| :---------------------- | ---------------------- | --------------------------------------------------------- |
 | SYMBOLS_START           | `<s>`                  |                                                           |
 | SYMBOLS_UNKNOWN         | `<unk>`                |                                                           |
 | SYMBOLS_PAD             | `<pad>`                |                                                           |
@@ -50,5 +70,40 @@ Export serving model: `python main.py --mode=inference`
 | model_save_name         | `model.ckpt`           | name of saved model                                       |
 | mode                    | `mode`                 | model of this program, must in (train, inference, export) |
 | export_serving_model_to | `./serving_model/`     | export serving model to                                   |
-| train_data_path         | `None`                 | train_data_path                                           |
+| data_path               | `None`                 | train_data_path                                           |
+| cut_data_postfix        | `.cut.txt`             | cut file postfix                                          |
+| stopwords_path          | `None`                 | stop word file path                                       |
+| jieba_dict_path         | `None`                 | jieba dict file path                                      |
+| question                | `None`                 |                                                           |
 
+# Update log
+
+This project will update untill it ready to be a production
+
+## 2018-04-04
+
+* Add read data from file support
+
+* Add `cut_data` mode
+
+* Add `jieba` for support cut sentence
+
+* Add `logconfig` at `main.py`
+
+* Add arguments: 
+
+  * `cut_data_postfix`: a cut train data file, generate by cut mode
+  * `stopwords_path`: stop word file path
+  * `jieba_dict_path`:jieba dict file path
+  *  `question`: question for inference
+
+* Modify argument: 
+
+  *  `train_data_path` to `data_path`
+
+* Update default hparam: 
+
+  * `dec_sentence_length` from  `10` to `50` for support longer answer sentence
+  *  `batch_size` from `6` to `10` for make train faster
+
+  ​

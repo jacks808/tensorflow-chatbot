@@ -1,11 +1,11 @@
 # idea
 .idea/
 
-# model checkpoint files
 model-checkpoints
-
-# serving export files
 serving_model
+train.txt.cut.txt
+dict.txt.big
+stopwords.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -108,3 +108,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+

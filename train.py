@@ -45,17 +45,16 @@ def train(hparams, model, data_info):
                 all_preds.append(batch_preds)
 
             # Logging every 400 epochs
-            if epoch % 400 == 0:
-                print('Epoch', epoch)
+            if epoch % 500 == 0:
                 for input_batch, target_batch, batch_preds in zip(input_batches,
                                                                   target_batches,
                                                                   all_preds):
                     for input_sent, target_sent, pred in zip(input_batch, target_batch, batch_preds):
-                        print('\tinput:', input_sent)
-                        print('\tchatbot: ',
-                              chatbot_helper.idx2sent(hparams, pred, reverse_vocab=dec_reverse_vocab))
-                        print('\tCorrect answer:', target_sent, "\n")
-                print('\tepoch loss: {:.2f}\n'.format(epoch_loss))
+                        print('\tinput  :', input_sent,
+                              '\n\tchatbot: ', chatbot_helper.idx2sent(hparams, pred, reverse_vocab=dec_reverse_vocab),
+                              '\n\tCorrect:', target_sent, "\n")
+
+                print('Epoch, %d\tepoch loss: %f\n' % (epoch, epoch_loss))
 
                 # save model checkpoint
                 saver.save(sess, hparams.model_save_path + hparams.model_save_name, global_step=epoch)

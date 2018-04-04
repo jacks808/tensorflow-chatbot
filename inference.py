@@ -26,7 +26,7 @@ def infer(hparams, model, data_info, question):
     with tf.Session() as sess:
         saver.restore(sess, tf.train.latest_checkpoint(hparams.model_save_path))
         # 输入
-        encoder_data = chatbot_helper.build_input(hparams, sentences=[question], vocab=enc_vocab)
+        encoder_data = chatbot_helper.build_input(hparams, sentences=question, vocab=enc_vocab)
         decoder_data = chatbot_helper.build_output(hparams, sentences=[''], vocab=dec_vocab)
 
         batch_pred, loss_value = sess.run(
@@ -40,6 +40,5 @@ def infer(hparams, model, data_info, question):
         # 输出
         for pred in batch_pred:
             result = chatbot_helper.idx2sent(hparams, pred, reverse_vocab=dec_reverse_vocab)
-            print("result: ", result, "loss:", loss_value)
 
         return result, loss_value

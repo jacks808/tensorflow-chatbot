@@ -1,3 +1,5 @@
+import logging
+
 import tensorflow as tf
 from tensorflow.contrib.legacy_seq2seq import embedding_rnn_seq2seq
 from tensorflow.contrib.rnn import BasicRNNCell
@@ -7,6 +9,8 @@ import train
 from utils import data_helper
 from utils import export_helper
 
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+
 flags = tf.app.flags
 # 字典补全相关
 flags.DEFINE_string(name="SYMBOLS_START", default="<s>", help="开始字符")
@@ -15,8 +19,8 @@ flags.DEFINE_string(name="SYMBOLS_PAD", default="<pad>", help="补全字符")
 
 # 编码字符长度
 flags.DEFINE_integer(name="enc_sentence_length", default=10, help="enc_sentence_length")
-flags.DEFINE_integer(name="dec_sentence_length", default=10, help="dec_sentence_length")
-flags.DEFINE_integer(name="batch_size", default=6, help="batch_size")
+flags.DEFINE_integer(name="dec_sentence_length", default=50, help="dec_sentence_length")
+flags.DEFINE_integer(name="batch_size", default=10, help="batch_size")
 
 # hparams of graph
 flags.DEFINE_integer(name="n_epoch", default=5000, help="n_epoch")
@@ -30,10 +34,16 @@ flags.DEFINE_integer(name='dec_vocab_size', default=None, help="解码词典大�
 flags.DEFINE_string(name='model_save_path', default='./model-checkpoints/', help='model_save_path')
 flags.DEFINE_string(name='model_save_name', default='model.ckpt', help='model_save_name')
 
-flags.DEFINE_string(name='mode', default='train', help='mode of this program(train, inference, export)')
+flags.DEFINE_string(name='mode', default='train', help='mode of this program(train, inference, export, cut_data)')
 
 flags.DEFINE_string(name='export_serving_model_to', default='./serving_model/', help='export serving model to')
-flags.DEFINE_string(name='train_data_path', default=None, help='train_data_path')
+flags.DEFINE_string(name='data_path', default=None, help='data path')
+flags.DEFINE_string(name='cut_data_postfix', default='.cut.txt', help='a cut train data file, generate by cut mode')
+flags.DEFINE_string(name='stopwords_path', default=None, help='stop word file path')
+flags.DEFINE_string(name='jieba_dict_path', default=None, help='jieba dict file path')
+
+flags.DEFINE_string(name='question', default=None, help='question for inference')
+
 FLAGS = flags.FLAGS
 
 
@@ -62,7 +72,13 @@ def create_hparams(flags):
         mode=flags.mode,
 
         export_serving_model_to=flags.export_serving_model_to,
-        train_data_path=flags.train_data_path,
+        data_path=flags.data_path,
+
+        # cut sentence
+        cut_data_postfix=flags.cut_data_postfix,
+        stopwords_path=flags.stopwords_path,
+        jieba_dict_path=flags.jieba_dict_path,
+        question=flags.question,
     )
 
 
@@ -72,7 +88,7 @@ def def_model(hparams):
     :return:
     """
     tf.reset_default_graph()
-    encoder_index_input = tf.placeholder(  # shape = [?,10]
+    encoder_index_input = tf.placeholder(
         tf.int64,
         shape=[None, hparams.enc_sentence_length],
         name='input_sentence')
@@ -134,13 +150,25 @@ def def_model(hparams):
 
 def main(_):
     hparams = create_hparams(FLAGS)
+
+    if hparams.mode == 'cut_data':
+        data_helper.cut_file(hparams)
+        return
+
     data_info = data_helper.init_data(hparams)
     model = def_model(hparams)
 
     if hparams.mode == 'train':
         train.train(hparams, model, data_info)
     elif hparams.mode == 'inference':
-        inference.infer(hparams, model, data_info, 'But you should know I maybe')
+        question = hparams.question
+        cut_sentence = [' '.join(data_helper.cut_sentence(hparams, question))]
+
+        if len(cut_sentence) > hparams.enc_sentence_length:
+            raise Exception("question to long, you can retrain your model by set `enc_sentence_length` larger.")
+
+        result, loss_value = inference.infer(hparams, model, data_info, cut_sentence)
+        print("question: ", question, "result: ", result.strip(), "loss:", loss_value)
     elif hparams.mode == 'export':
         export_helper.export_model(hparams, model)
     else:
